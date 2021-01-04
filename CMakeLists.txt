@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(RecursiveCancer VERSION 1.0)
+project(Pinball VERSION 1.0)
 set(CMAKE_BUILD_TYPE Debug)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -12,14 +12,11 @@ SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
 
 include_directories("inc")
 set(SOURCES
-	src/commons.cpp
-	src/growth.cpp
-	src/board.cpp
-	src/simulation.cpp)
+	src/kulka.cpp)
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 add_library(Modules SHARED ${SOURCES})
 
-add_executable(RecursiveCancer main.cpp)
-target_compile_options(RecursiveCancer PRIVATE -Wall)
-target_link_libraries(RecursiveCancer sfml-graphics sfml-audio Modules)
+add_executable(Pinball main.cpp)
+target_compile_options(Pinball PRIVATE -Wall)
+target_link_libraries(Pinball sfml-graphics sfml-audio Modules)
