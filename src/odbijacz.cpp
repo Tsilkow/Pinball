@@ -1,5 +1,12 @@
 #include "odbijacz.hpp"
 
+
+void Odbijacz::status(bool enter)
+{
+    std::cout << "{ " << typeid(*this).name() << ", (" << pozycja.first << ", " << pozycja.second << ") }";
+    if(enter) std::cout << "\n";
+}
+
 std::pair<bool, bool> Ukosny::odbij(std::shared_ptr<Kulka>& kulka)
 {
     if(typeid(kulka.get()).name() == "Taran") return std::make_pair(false, true);

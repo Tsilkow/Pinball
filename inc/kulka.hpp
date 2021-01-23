@@ -18,7 +18,9 @@ class Kulka
     virtual bool zrobRuch() = 0; // zwraca czy jest na nowej pozycji
     bool czyWRamach(int s, int w);
     virtual void zderzenie(std::shared_ptr<Kulka>& kulka) = 0;
+    void status(bool enter = true);
 
+    const std::pair<int, int>& getPozycja() const {return pozycja; }
     const int& getOdwPredkosci() const {return odwrotnoscPredkosci; }
     const int& getKierunek() const {return kierunek; }
     const int& getPostep() const {return postep; }

@@ -13,6 +13,7 @@ class Odbijacz
     public:
     Odbijacz(std::pair<int, int> _pozycja): pozycja(_pozycja) {;}
     virtual std::pair<bool, bool> odbij(std::shared_ptr<Kulka>& kulka) = 0;
+    void status(bool enter=true);
 
     const std::pair<int, int>& getPozycja() const {return pozycja; }
 };
@@ -20,7 +21,7 @@ class Odbijacz
 class Ukosny: public Odbijacz
 {
     private:
-    int skos;
+    int skos; // 0 = \, 1 = /
     public:
     Ukosny(std::pair<int, int> _pozycja, int _skos): Odbijacz(_pozycja), skos(_skos) {;}
     std::pair<bool, bool> odbij(std::shared_ptr<Kulka>& kulka);

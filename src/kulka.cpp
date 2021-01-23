@@ -28,6 +28,13 @@ bool Kulka::czyWRamach(int s, int w)
     return (pozycja.first >= 0 && pozycja.first < s && pozycja.second >= 0 && pozycja.second < w);
 }
 
+void Kulka::status(bool enter)
+{
+    std::cout << "{ " << typeid(*this).name() << ", (" << pozycja.first << ", " << pozycja.second << "), "
+	      << odwrotnoscPredkosci << ", " << kierunek << ", " << postep << "}";
+    if(enter) std::cout << "\n";
+}
+
 bool Zwykla::zrobRuch()
 {
     ++postep;
