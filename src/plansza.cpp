@@ -32,13 +32,23 @@ bool Plansza::zrobTure()
 {
     std::set< std::pair<int, int> > wybuchy;
     
-    for(auto it = kulki.begin(); it != kulki.end(); ++it)
+    for(auto it = kulki.begin(); it != kulki.end();)
     {
 	(*it)->zrobRuch();
-	if(typeid(it->get()).name() == "Wybuchowa" && std::static_pointer_cast<Wybuchowa>(*it)->czyWybuchla())
+	if(!(*it)->czyWRamach(szerokosc, wysokosc))
 	{
-	    wybuchy.insert((*it)->getPozycja());
+	    zastopowane.push_back(*it);
+	    it = kulki.erase(it);
 	}
+	else if((*it)->getTyp() == 2 &&
+		std::static_pointer_cast<Wybuchowa>(*it)->czyWybuchla())
+	{
+	    std::cout << "WYBUCH W " << (*it)->getPozycja().first << " "
+		      << (*it)->getPozycja().second << "\n";
+	    wybuchy.insert((*it)->getPozycja());
+	    it = kulki.erase(it);
+	}
+	else ++it;
     }
 
     for(auto it = kulki.begin(); it != kulki.end();)
@@ -54,22 +64,37 @@ bool Plansza::zrobTure()
     {
 	for(auto jt = it+1; jt != kulki.end(); ++jt)
 	{
-	    if((*it)->getPozycja() == (*jt)->getPozycja()) (*it)->zderzenie(*jt);
+	    if((*it)->getPozycja() == (*jt)->getPozycja())
+	    {
+		std::cout << "ZDERZENIE KULEK W " << (*it)->getPozycja().first << " "
+			  << (*it)->getPozycja().second << "\n";
+		(*it)->zderzenie(*jt);
+	    }
 	}
     }
 
-    for(auto it = odbijacze.begin(); it != odbijacze.end(); ++it)
+    for(auto it = odbijacze.begin(); it != odbijacze.end();)
     {
-	for(auto jt = kulki.begin(); jt < kulki.end(); ++jt)
+	bool zniszczony = false;
+	for(auto jt = kulki.begin(); !zniszczony && jt != kulki.end();)
 	{
 	    if((*it)->getPozycja() == (*jt)->getPozycja())
 	    {
+		std::cout << "ODBICIE W " << (*it)->getPozycja().first << " "
+			  << (*it)->getPozycja().second << "\n";
 		std::pair<bool, bool> wynik = (*it)->odbij(*jt);
 
-		if(wynik.first == false) it = odbijacze.erase(it);
+		if(wynik.first == false)
+		{
+		    it = odbijacze.erase(it);
+		    zniszczony = true;
+		}
 		if(wynik.second == false) jt = kulki.erase(jt);
+		else ++jt;
 	    }
+	    else ++jt;
 	}
+	if(!zniszczony) ++it;
     }
 
     ++obecnaTura;
@@ -80,8 +105,14 @@ bool Plansza::zrobTure()
 void Plansza::status()
 {
     std::cout << "======STATUS======\n";
-    std::cout << "Kulki: \n";
+    std::cout << "Kulki aktywne: \n";
     for(auto it = kulki.begin(); it != kulki.end(); ++it)
+    {
+	(*it)->status(true);
+    }
+    
+    std::cout << "Kulki poza planszą: \n";
+    for(auto it = zastopowane.begin(); it != zastopowane.end(); ++it)
     {
 	(*it)->status(true);
     }

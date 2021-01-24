@@ -12,6 +12,7 @@ class Plansza
 {
     private:
     std::vector<std::shared_ptr<Kulka>> kulki;
+    std::vector<std::shared_ptr<Kulka>> zastopowane;
     std::vector<std::shared_ptr<Odbijacz>> odbijacze;
     int liczbaTur;
     int szerokosc;

@@ -1,25 +1,26 @@
 #include "kulka.hpp"
 
 
-Kulka::Kulka(std::pair<int, int> _pozycja, int s, int w):
+Kulka::Kulka(std::pair<int, int> _pozycja, int s, int w, int _typ):
     pozycja(_pozycja),
+    typ(_typ),
     odwrotnoscPredkosci(1),
     postep(0)
 {
-    if(pozycja.first == 0) // lewa strona planszy
+    if(pozycja.first == -1) // lewa strona planszy
     {
-	if     (pozycja.second == 0) kierunek = 3; // lewy górny narożnik
-	else if(pozycja.second == w) kierunek = 1; // lewy dolny narożnik
-	else                         kierunek = 2; // lewa ściana
+	if     (pozycja.second == -1) kierunek = 3; // lewy górny narożnik
+	else if(pozycja.second == w ) kierunek = 1; // lewy dolny narożnik
+	else                          kierunek = 2; // lewa ściana
     }
     else if(pozycja.first == s) // prawa strona planszy
     {
-	if     (pozycja.second == 0) kierunek = 5; // prawy górny narożnik
-	else if(pozycja.second == w) kierunek = 7; // prawy dolny narożnik
-	else                         kierunek = 6; // prawa ściana
+	if     (pozycja.second == -1) kierunek = 5; // prawy górny narożnik
+	else if(pozycja.second == w ) kierunek = 7; // prawy dolny narożnik
+	else                          kierunek = 6; // prawa ściana
     }
-    else if(pozycja.second == 0) kierunek = 4; // górna ściana
-    else if(pozycja.second == 0) kierunek = 0; // dolna ściana
+    else if(pozycja.second == -1) kierunek = 4; // górna ściana
+    else if(pozycja.second == w ) kierunek = 0; // dolna ściana
     else std::cout << "!BŁĄD! Kulka nie startuje na krawędzi planszy!" << std::endl;
 }
 
@@ -30,7 +31,14 @@ bool Kulka::czyWRamach(int s, int w)
 
 void Kulka::status(bool enter)
 {
-    std::cout << "{ " << typeid(*this).name() << ", (" << pozycja.first << ", " << pozycja.second << "), "
+    std::cout << "{";
+    switch(typ)
+    {
+	case 0: std::cout << "Zwykla"; break;
+	case 1: std::cout << "Taran"; break;
+	case 2: std::cout << "Wybuchowa"; break;
+    }
+    std::cout << ", (" << pozycja.first << ", " << pozycja.second << "), "
 	      << odwrotnoscPredkosci << ", " << kierunek << ", " << postep << "}";
     if(enter) std::cout << "\n";
 }

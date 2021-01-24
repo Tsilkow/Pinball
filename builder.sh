@@ -19,4 +19,3 @@ if eval cmake --build .; then
 else
     cd ..
 fi
-    

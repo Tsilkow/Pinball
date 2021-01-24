@@ -9,7 +9,7 @@ void Odbijacz::status(bool enter)
 
 std::pair<bool, bool> Ukosny::odbij(std::shared_ptr<Kulka>& kulka)
 {
-    if(typeid(kulka.get()).name() == "Taran") return std::make_pair(false, true);
+    if(kulka->getTyp() == 1) return std::make_pair(false, true);
 
     if(kulka->getKierunek() % 2 == 1) kulka->setKierunek((kulka->getKierunek()+4) % 8);
     else
@@ -43,7 +43,7 @@ std::pair<bool, bool> Ukosny::odbij(std::shared_ptr<Kulka>& kulka)
 
 std::pair<bool, bool> Losowy::odbij(std::shared_ptr<Kulka>& kulka)
 {
-    if(typeid(kulka.get()).name() == "Taran") return std::make_pair(false, true);
+    if(kulka->getTyp() == 1) return std::make_pair(false, true);
     
     kulka->setKierunek(rand() % 8);
 
@@ -52,15 +52,15 @@ std::pair<bool, bool> Losowy::odbij(std::shared_ptr<Kulka>& kulka)
 
 std::pair<bool, bool> Zjadajacy::odbij(std::shared_ptr<Kulka>& kulka)
 {
-    if(typeid(kulka.get()).name() == "Taran") return std::make_pair(false, false);
+    if(kulka->getTyp() == 1) return std::make_pair(false, true);
     return std::make_pair(true, false);
 }
 
 std::pair<bool, bool> Predkosciowy::odbij(std::shared_ptr<Kulka>& kulka)
 {
-    if(typeid(kulka.get()).name() == "Taran") return std::make_pair(false, true);
+    if(kulka->getTyp() == 1) return std::make_pair(false, true);
 
-    if(przyspieszajacy) kulka->setOdwPredkosci(std::min(1, kulka->getOdwPredkosci()/2));
+    if(przyspieszajacy) kulka->setOdwPredkosci(std::max(1, kulka->getOdwPredkosci()/2));
     else kulka->setOdwPredkosci(kulka->getOdwPredkosci()*2);
 
     return std::make_pair(true, true);
@@ -68,7 +68,7 @@ std::pair<bool, bool> Predkosciowy::odbij(std::shared_ptr<Kulka>& kulka)
 
 std::pair<bool, bool> Mglowy::odbij(std::shared_ptr<Kulka>& kulka)
 {
-    if(typeid(kulka.get()).name() == "Taran") return std::make_pair(false, true);
+    if(kulka->getTyp() == 1) return std::make_pair(false, true);
 
     return std::make_pair(true, true);
 }
