@@ -27,6 +27,7 @@ bool wczytajZPliku(std::shared_ptr<Plansza>& plansza, std::string nazwa, int cza
 	int wysokosc;
 
 	plik >> tur >> szerokosc >> wysokosc;
+	// przejście do następnej linii
 	plik.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	plansza = std::make_shared<Plansza>(tur, szerokosc, wysokosc, czasDoWybuchu);
@@ -39,7 +40,7 @@ bool wczytajZPliku(std::shared_ptr<Plansza>& plansza, std::string nazwa, int cza
 		std::cout << "!BŁĄD! Za mało linii opisu sytuacji wejściowej w pliku!\n";
 		return false;
 	    }
-	    else if(linia.size() != szerokosc+2)
+	    else if(((int)linia.size()) != szerokosc+2)
 	    {
 		std::cout << "!BŁĄD! Linia " << y+2 << " w pliku opisu sytaucji wejściowej ma niepoprawną długość!\n";
 		return false;

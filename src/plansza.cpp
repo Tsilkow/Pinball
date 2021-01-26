@@ -31,7 +31,8 @@ bool Plansza::dodajOdbijacz(std::pair<int, int> pozycja, char typ)
 bool Plansza::zrobTure()
 {
     std::set< std::pair<int, int> > wybuchy;
-    
+
+    // wykonywanie ruchów, sprawdzanie czy kulka wciąż na planszy i rejestrowanie wybuchów
     for(auto it = kulki.begin(); it != kulki.end();)
     {
 	(*it)->zrobRuch();
@@ -40,7 +41,7 @@ bool Plansza::zrobTure()
 	    zastopowane.push_back(*it);
 	    it = kulki.erase(it);
 	}
-	else if((*it)->getTyp() == 2 &&
+	else if((*it)->getTyp() == TypKulki::wybuchowa &&
 		std::static_pointer_cast<Wybuchowa>(*it)->czyWybuchla())
 	{
 	    std::cout << "WYBUCH W " << (*it)->getPozycja().first << " "
@@ -51,6 +52,7 @@ bool Plansza::zrobTure()
 	else ++it;
     }
 
+    // niszczenie kulek na polach z wybuchem
     for(auto it = kulki.begin(); it != kulki.end();)
     {
 	if(wybuchy.find((*it)->getPozycja()) != wybuchy.end())
@@ -60,6 +62,17 @@ bool Plansza::zrobTure()
 	else ++it;
     }
 
+    // niszczenie odbijaczy na polach z wybuchem
+    for(auto it = odbijacze.begin(); it != odbijacze.end();)
+    {
+	if(wybuchy.find((*it)->getPozycja()) != wybuchy.end())
+	{
+	    it = odbijacze.erase(it);
+	}
+	else ++it;
+    }
+
+    // obsługa zderzeń kulek: kulki zderzają się ze sobą parami
     for(auto it = kulki.begin(); it != kulki.end(); ++it)
     {
 	for(auto jt = it+1; jt != kulki.end(); ++jt)
@@ -73,6 +86,7 @@ bool Plansza::zrobTure()
 	}
     }
 
+    // obsługa odbić kulek
     for(auto it = odbijacze.begin(); it != odbijacze.end();)
     {
 	bool zniszczony = false;
@@ -84,11 +98,13 @@ bool Plansza::zrobTure()
 			  << (*it)->getPozycja().second << "\n";
 		std::pair<bool, bool> wynik = (*it)->odbij(*jt);
 
+		// jeśli odbicie zniszczyło odbijacz
 		if(wynik.first == false)
 		{
 		    it = odbijacze.erase(it);
 		    zniszczony = true;
 		}
+		// jeśli odbicie znisczyło kulkę
 		if(wynik.second == false) jt = kulki.erase(jt);
 		else ++jt;
 	    }

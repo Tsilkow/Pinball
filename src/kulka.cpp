@@ -1,7 +1,7 @@
 #include "kulka.hpp"
 
 
-Kulka::Kulka(std::pair<int, int> _pozycja, int s, int w, int _typ):
+Kulka::Kulka(std::pair<int, int> _pozycja, int s, int w, TypKulki _typ):
     pozycja(_pozycja),
     typ(_typ),
     odwrotnoscPredkosci(1),
@@ -34,9 +34,9 @@ void Kulka::status(bool enter)
     std::cout << "{";
     switch(typ)
     {
-	case 0: std::cout << "Zwykla"; break;
-	case 1: std::cout << "Taran"; break;
-	case 2: std::cout << "Wybuchowa"; break;
+	case zwykla:    std::cout << "Zwykla"; break;
+	case taran:     std::cout << "Taran"; break;
+	case wybuchowa: std::cout << "Wybuchowa"; break;
     }
     std::cout << ", (" << pozycja.first << ", " << pozycja.second << "), "
 	      << odwrotnoscPredkosci << ", " << kierunek << ", " << postep << "}";

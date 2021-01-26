@@ -21,6 +21,13 @@ class Plansza
     int obecnaTura;
     
     public:
+    // Plansza bez szerokości i wysokości nie jest Planszą
+    Plansza() = delete;
+
+    // Ponieważ wszystkie zmienne Planszy są proste albo kontenerami z STLa, to destruktor domyślny w pełni wystarcza
+    ~Plansza() = default;
+
+    // Konstruktor Planszy
     Plansza(int _liczbaTur, int _szerokosc, int _wysokosc, int _czasDoWybuchu):
 	liczbaTur(_liczbaTur),
 	szerokosc(_szerokosc),
@@ -28,8 +35,13 @@ class Plansza
 	czasDoWybuchu(_czasDoWybuchu),
 	obecnaTura(0)
 	{;}
+    
     bool dodajKulke(std::pair<int, int> pozycja, char typ);
+    
     bool dodajOdbijacz(std::pair<int, int> pozycja, char typ);
+    
     bool zrobTure();
+
+    // Wypisuje status kulki
     void status();
 };

@@ -11,8 +11,19 @@ class Odbijacz
     protected:
     std::pair<int, int> pozycja;
     public:
+    // Odbijacz bez określonej pozycji nie istnieje
+    Odbijacz() = delete;
+
+    // Ponieważ jedyną zmienną Odbijacza jest kontener z STL, to destruktor domyślny w pełni wystarczy
+    ~Odbijacz() = default;
+
+    // Konstruktor Odbijacza
     Odbijacz(std::pair<int, int> _pozycja): pozycja(_pozycja) {;}
+
+    // Wirtualna metoda, bo odbijacze mogą robić skrajnie różne rzeczy; zwraca czy Odbijacz i Kulka przeżyły odbicie (w tej kolejności)
     virtual std::pair<bool, bool> odbij(std::shared_ptr<Kulka>& kulka) = 0;
+
+    // Wypisuje status odbijacza
     void status(bool enter=true);
 
     const std::pair<int, int>& getPozycja() const {return pozycja; }
