@@ -14,6 +14,7 @@ class Kulka
     int odwrotnoscPredkosci;
     int kierunek;
     int postep;
+    bool nowaKratka;
     
     public:
     // Kulka bez określonej pozycji i typu nie istnieje
@@ -41,6 +42,7 @@ class Kulka
     const int& getOdwPredkosci() const {return odwrotnoscPredkosci; }
     const int& getKierunek() const {return kierunek; }
     const int& getPostep() const {return postep; }
+    const bool WNowejKratce() {return nowaKratka; }
     void setOdwPredkosci(int wartosc) {odwrotnoscPredkosci = wartosc; }
     void setKierunek(int wartosc) {kierunek = wartosc; }
     void setPostep(int wartosc) {postep = wartosc; }

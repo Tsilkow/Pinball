@@ -5,7 +5,8 @@ Kulka::Kulka(std::pair<int, int> _pozycja, int s, int w, TypKulki _typ):
     pozycja(_pozycja),
     typ(_typ),
     odwrotnoscPredkosci(1),
-    postep(0)
+    postep(0),
+    nowaKratka(true)
 {
     if(pozycja.first == -1) // lewa strona planszy
     {
@@ -60,9 +61,11 @@ bool Zwykla::zrobRuch()
 	    case 6: --pozycja.first;                 ; break; // wschód
 	    case 7: --pozycja.first; --pozycja.second; break; // północny wschód
 	}
-	return true;
+	nowaKratka = true;
     }
-    return false;
+    else nowaKratka = false;
+    
+    return nowaKratka;
 }
 
 void Zwykla::zderzenie(std::shared_ptr<Kulka>& kulka)

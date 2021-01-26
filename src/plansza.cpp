@@ -75,13 +75,17 @@ bool Plansza::zrobTure()
     // obsługa zderzeń kulek: kulki zderzają się ze sobą parami
     for(auto it = kulki.begin(); it != kulki.end(); ++it)
     {
-	for(auto jt = it+1; jt != kulki.end(); ++jt)
+	if((*it)->WNowejKratce())
 	{
-	    if((*it)->getPozycja() == (*jt)->getPozycja())
+	    for(auto jt = kulki.begin(); jt != kulki.end(); ++jt)
 	    {
-		std::cout << "ZDERZENIE KULEK W " << (*it)->getPozycja().first << " "
-			  << (*it)->getPozycja().second << "\n";
-		(*it)->zderzenie(*jt);
+		if(it != jt && (it < jt || !(*jt)->WNowejKratce()) &&
+		   (*it)->getPozycja() == (*jt)->getPozycja())
+		{
+		    std::cout << "ZDERZENIE KULEK W " << (*it)->getPozycja().first << " "
+			      << (*it)->getPozycja().second << "\n";
+		    (*it)->zderzenie(*jt);
+		}
 	    }
 	}
     }
