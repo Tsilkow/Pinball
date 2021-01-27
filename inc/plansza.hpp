@@ -27,6 +27,10 @@ class Plansza
     // Ponieważ wszystkie zmienne Planszy są proste albo kontenerami z STLa, to destruktor domyślny w pełni wystarcza
     ~Plansza() = default;
 
+    Plansza(const Plansza& oryginal) = default;
+
+    void operator= (const Plansza& wartosc) = delete;
+
     // Konstruktor Planszy
     Plansza(int _liczbaTur, int _szerokosc, int _wysokosc, int _czasDoWybuchu):
 	liczbaTur(_liczbaTur),

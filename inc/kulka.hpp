@@ -18,11 +18,15 @@ class Kulka
     bool zniszczona;
     
     public:
-    // Kulka bez określonej pozycji i typu nie istnieje
+    // Kulka bez określonej pozycji i typu nie istnieje (tak samo dla klas dziedziczących)
     Kulka() = delete;
 
-    // Ponieważ wszystkie zmienne Kulki są proste albo kontenerami z STLa, to destruktor domyślny w pełni wystarcza
+    // Ponieważ wszystkie zmienne Kulki są proste albo kontenerami z STLa, to destruktor domyślny w pełni wystarcza (tak samo dla klas dziedziczących)
     ~Kulka() = default;
+
+    Kulka(const Kulka& oryginal) = default;
+
+    void operator= (const Kulka& wartosc) = delete;
 
     // Konstruktor Kulki, zmienne s i w (szerokość i wysokość), aby kulka mogła od razu stwierdzić w jakim kierunku ma się poruszać
     Kulka(std::pair<int, int> _pozycja, int s, int w, TypKulki _typ);
@@ -49,7 +53,7 @@ class Kulka
     const int& getOdwPredkosci() const {return odwrotnoscPredkosci; }
     const int& getKierunek() const {return kierunek; }
     const int& getPostep() const {return postep; }
-    const bool czyZniszczona() const {return zniszczona; }
+    virtual const bool czyZniszczona() const {return zniszczona; }
     const bool czyKoliduje() {return koliduje; }
     void setOdwPredkosci(int wartosc) {odwrotnoscPredkosci = wartosc; }
     void setKierunek(int wartosc) {kierunek = wartosc; }
@@ -81,5 +85,5 @@ class Wybuchowa: public Kulka
 	{;}
     bool zrobRuch();
     void zderzenie(const std::shared_ptr<Kulka>& kulka) override;
-    bool czyWybuchla() {return (czasDoWybuchu <= 0); }
+    const bool czyZniszczona() const override {return zniszczona || (czasDoWybuchu < 0); }
 };

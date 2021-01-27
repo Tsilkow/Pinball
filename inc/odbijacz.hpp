@@ -12,11 +12,15 @@ class Odbijacz
     std::pair<int, int> pozycja;
     bool zniszczony;
     public:
-    // Odbijacz bez określonej pozycji nie istnieje
+    // Odbijacz bez określonej pozycji nie istnieje (tak samo dla klas dziedziczących)
     Odbijacz() = delete;
 
-    // Ponieważ jedyną zmienną Odbijacza jest kontener z STL, to destruktor domyślny w pełni wystarczy
+    // Ponieważ jedyną zmienną Odbijacza jest kontener z STL, to destruktor domyślny w pełni wystarczy (tak samo dla klas dziedziczących)
     ~Odbijacz() = default;
+
+    Odbijacz(const Odbijacz& oryginal) = default;
+
+    void operator= (const Odbijacz&) = delete;
 
     // Konstruktor Odbijacza
     Odbijacz(std::pair<int, int> _pozycja): pozycja(_pozycja), zniszczony(false) {;}

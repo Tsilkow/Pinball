@@ -91,11 +91,12 @@ int main()
 
     if(wczytajZPliku(plansza, "wejscie", czasDoWybuchu))
     {
-	plansza->status();
+	//plansza->status();
 	while(plansza->zrobTure())
 	{
-	    plansza->status();
+	    ;//plansza->status();
 	}
+	plansza->status();
     }
     
     return 0;
