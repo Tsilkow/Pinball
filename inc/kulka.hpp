@@ -14,7 +14,8 @@ class Kulka
     int odwrotnoscPredkosci;
     int kierunek;
     int postep;
-    bool nowaKratka;
+    bool koliduje;
+    bool zniszczona;
     
     public:
     // Kulka bez określonej pozycji i typu nie istnieje
@@ -26,11 +27,14 @@ class Kulka
     // Konstruktor Kulki, zmienne s i w (szerokość i wysokość), aby kulka mogła od razu stwierdzić w jakim kierunku ma się poruszać
     Kulka(std::pair<int, int> _pozycja, int s, int w, TypKulki _typ);
 
-    virtual bool zrobRuch() = 0;
+    bool zrobRuch();
+
+    // Funkcja pomocnicza do samego wykonywania ruchu w zadanym kierunku
+    bool krokWKierunku();
 
     bool czyWRamach(int s, int w);
 
-    virtual void zderzenie(std::shared_ptr<Kulka>& kulka)=0;
+    virtual void zderzenie(const std::shared_ptr<Kulka>& kulka)=0;
 
     // Zwraca jakiego typu jest kulka. Niestety jest to potrzebne, dla kulek których działania wykracza poza samą kulkę
     TypKulki getTyp() {return typ; }
@@ -38,11 +42,15 @@ class Kulka
     // Wypisuje status kulki
     void status(bool enter = true);
 
+    // Zapisuje, że kulka została zniszczona
+    void zniszcz() {zniszczona = true; }
+
     const std::pair<int, int>& getPozycja() const {return pozycja; }
     const int& getOdwPredkosci() const {return odwrotnoscPredkosci; }
     const int& getKierunek() const {return kierunek; }
     const int& getPostep() const {return postep; }
-    const bool WNowejKratce() {return nowaKratka; }
+    const bool czyZniszczona() const {return zniszczona; }
+    const bool czyKoliduje() {return koliduje; }
     void setOdwPredkosci(int wartosc) {odwrotnoscPredkosci = wartosc; }
     void setKierunek(int wartosc) {kierunek = wartosc; }
     void setPostep(int wartosc) {postep = wartosc; }
@@ -52,16 +60,14 @@ class Zwykla: public Kulka
 {
     public:
     Zwykla(std::pair<int, int> _pozycja, int s, int w): Kulka(_pozycja, s, w, TypKulki::zwykla) {;}
-    bool zrobRuch();
-    void zderzenie(std::shared_ptr<Kulka>& kulka);
+    void zderzenie(const std::shared_ptr<Kulka>& kulka);
 };
 
 class Taran: public Kulka
 {
     public:
     Taran(std::pair<int, int> _pozycja, int s, int w): Kulka(_pozycja, s, w, TypKulki::taran) {;}
-    bool zrobRuch();
-    void zderzenie(std::shared_ptr<Kulka>& kulka);
+    void zderzenie(const std::shared_ptr<Kulka>& kulka);
 };
 
 class Wybuchowa: public Kulka
@@ -74,6 +80,6 @@ class Wybuchowa: public Kulka
 	czasDoWybuchu(_czasDoWybuchu)
 	{;}
     bool zrobRuch();
-    void zderzenie(std::shared_ptr<Kulka>& kulka);
+    void zderzenie(const std::shared_ptr<Kulka>& kulka);
     bool czyWybuchla() {return (czasDoWybuchu <= 0); }
 };

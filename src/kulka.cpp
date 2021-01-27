@@ -6,7 +6,8 @@ Kulka::Kulka(std::pair<int, int> _pozycja, int s, int w, TypKulki _typ):
     typ(_typ),
     odwrotnoscPredkosci(1),
     postep(0),
-    nowaKratka(true)
+    koliduje(true),
+    zniszczona(false)
 {
     if(pozycja.first == -1) // lewa strona planszy
     {
@@ -30,6 +31,35 @@ bool Kulka::czyWRamach(int s, int w)
     return (pozycja.first >= 0 && pozycja.first < s && pozycja.second >= 0 && pozycja.second < w);
 }
 
+bool Kulka::krokWKierunku()
+{
+    ++postep;
+    if(postep >= odwrotnoscPredkosci)
+    {
+	postep = 0;
+	switch(kierunek)
+	{
+	    case 0:                  --pozycja.second; break; // północ
+	    case 1: ++pozycja.first; --pozycja.second; break; // północny zachód
+	    case 2: ++pozycja.first;                 ; break; // zachód
+	    case 3: ++pozycja.first; ++pozycja.second; break; // południowy zachód
+	    case 4:                  ++pozycja.second; break; // południe
+	    case 5: --pozycja.first; ++pozycja.second; break; // południowy wschód
+	    case 6: --pozycja.first;                 ; break; // wschód
+	    case 7: --pozycja.first; --pozycja.second; break; // północny wschód
+	}
+	koliduje = true;
+    }
+    else koliduje = false;
+    
+    return koliduje;
+}
+
+bool Kulka::zrobRuch()
+{
+    return krokWKierunku();
+}
+
 void Kulka::status(bool enter)
 {
     std::cout << "{";
@@ -44,32 +74,10 @@ void Kulka::status(bool enter)
     if(enter) std::cout << "\n";
 }
 
-bool Zwykla::zrobRuch()
+void Zwykla::zderzenie(const std::shared_ptr<Kulka>& kulka)
 {
-    ++postep;
-    if(postep >= odwrotnoscPredkosci)
-    {
-	postep = 0;
-	switch(kierunek)
-	{
-	    case 0:                  --pozycja.second; break; // północ
-	    case 1: ++pozycja.first; --pozycja.second; break; // północny zachód
-	    case 2: ++pozycja.first;                 ; break; // zachód
-	    case 3: ++pozycja.first; ++pozycja.second; break; // południowy zachód
-	    case 4:                  ++pozycja.second; break; // południe
-	    case 5: --pozycja.first; ++pozycja.second; break; // południowy wschód
-	    case 6: --pozycja.first;                 ; break; // wschód
-	    case 7: --pozycja.first; --pozycja.second; break; // północny wschód
-	}
-	nowaKratka = true;
-    }
-    else nowaKratka = false;
+    // Ponieważ w Planszy kulki są trzymane w takiej kolejności, że zwykła kulka nie będzie pierwsza w parze z inną niż zwykła kulka, to tutaj nie ma potrzeby obsługiwać innych zderzeń niż ze zwykłą kulką
     
-    return nowaKratka;
-}
-
-void Zwykla::zderzenie(std::shared_ptr<Kulka>& kulka)
-{
     int tempP = odwrotnoscPredkosci;
     int tempK = kierunek;
     int tempPo = postep;
@@ -82,41 +90,10 @@ void Zwykla::zderzenie(std::shared_ptr<Kulka>& kulka)
     kulka->setPostep(tempPo);
 }
 
-
-bool Taran::zrobRuch()
+void Taran::zderzenie(const std::shared_ptr<Kulka>& kulka)
 {
-    ++postep;
-    if(postep >= odwrotnoscPredkosci)
-    {
-	postep = 0;
-	switch(kierunek)
-	{
-	    case 0:                  --pozycja.second; break; // północ
-	    case 1: ++pozycja.first; --pozycja.second; break; // północny zachód
-	    case 2: ++pozycja.first;                 ; break; // zachód
-	    case 3: ++pozycja.first; ++pozycja.second; break; // południowy zachód
-	    case 4:                  ++pozycja.second; break; // południe
-	    case 5: --pozycja.first; ++pozycja.second; break; // południowy wschód
-	    case 6: --pozycja.first;                 ; break; // wschód
-	    case 7: --pozycja.first; --pozycja.second; break; // północny wschód
-	}
-	return true;
-    }
-    return false;
-}
-
-void Taran::zderzenie(std::shared_ptr<Kulka>& kulka)
-{
-    int tempP = odwrotnoscPredkosci;
-    int tempK = kierunek;
-    int tempPo = postep;
-    odwrotnoscPredkosci = kulka->getOdwPredkosci();
-    kierunek = kulka->getKierunek();
-    postep = kulka->getPostep();
-
-    kulka->setOdwPredkosci(tempP);
-    kulka->setKierunek(tempK);
-    kulka->setPostep(tempPo);
+    kulka->zniszcz();
+    if(kulka->getTyp() == TypKulki::taran) zniszczona = true;
 }
 
 bool Wybuchowa::zrobRuch()
@@ -124,37 +101,34 @@ bool Wybuchowa::zrobRuch()
     --czasDoWybuchu;
     if(czasDoWybuchu >= 0)
     {
-	++postep;
-	if(postep >= odwrotnoscPredkosci)
-	{
-	    postep = 0;
-	    switch(kierunek)
-	    {
-		case 0:                  --pozycja.second; break; // północ
-		case 1: ++pozycja.first; --pozycja.second; break; // północny zachód
-		case 2: ++pozycja.first;                 ; break; // zachód
-		case 3: ++pozycja.first; ++pozycja.second; break; // południowy zachód
-		case 4:                  ++pozycja.second; break; // południe
-		case 5: --pozycja.first; ++pozycja.second; break; // południowy wschód
-		case 6: --pozycja.first;                 ; break; // wschód
-		case 7: --pozycja.first; --pozycja.second; break; // północny wschód
-	    }
-	    return true;
-	}	
+	return krokWKierunku();
     }
-    return false;
+    return true;
 }
 
-void Wybuchowa::zderzenie(std::shared_ptr<Kulka>& kulka)
+void Wybuchowa::zderzenie(const std::shared_ptr<Kulka>& kulka)
 {
-    int tempP = odwrotnoscPredkosci;
-    int tempK = kierunek;
-    int tempPo = postep;
-    odwrotnoscPredkosci = kulka->getOdwPredkosci();
-    kierunek = kulka->getKierunek();
-    postep = kulka->getPostep();
+    if(czasDoWybuchu >= 0)
+    {
+	// Nie muszę robić oddzielnego przypadku, kiedy druga kulka jest wybuchowa, bo wszystkie wybuchają w tym samym czasie
+        if(kulka->getTyp() == TypKulki::taran) zniszczona = true;
+	else
+	{
+	    int tempP = odwrotnoscPredkosci;
+	    int tempK = kierunek;
+	    int tempPo = postep;
+	    odwrotnoscPredkosci = kulka->getOdwPredkosci();
+	    kierunek = kulka->getKierunek();
+	    postep = kulka->getPostep();
 
-    kulka->setOdwPredkosci(tempP);
-    kulka->setKierunek(tempK);
-    kulka->setPostep(tempPo);
+	    kulka->setOdwPredkosci(tempP);
+	    kulka->setKierunek(tempK);
+	    kulka->setPostep(tempPo);
+	}
+    }
+    else
+    {
+	zniszczona = true;
+	kulka->zniszcz();
+    }    
 }

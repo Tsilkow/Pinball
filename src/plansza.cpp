@@ -41,80 +41,49 @@ bool Plansza::zrobTure()
 	    zastopowane.push_back(*it);
 	    it = kulki.erase(it);
 	}
-	else if((*it)->getTyp() == TypKulki::wybuchowa &&
-		std::static_pointer_cast<Wybuchowa>(*it)->czyWybuchla())
-	{
-	    std::cout << "WYBUCH W " << (*it)->getPozycja().first << " "
-		      << (*it)->getPozycja().second << "\n";
-	    wybuchy.insert((*it)->getPozycja());
-	    it = kulki.erase(it);
-	}
 	else ++it;
     }
-
-    // niszczenie kulek na polach z wybuchem
-    for(auto it = kulki.begin(); it != kulki.end();)
-    {
-	if(wybuchy.find((*it)->getPozycja()) != wybuchy.end())
-	{
-	    it = kulki.erase(it);
-	}
-	else ++it;
-    }
-
-    // niszczenie odbijaczy na polach z wybuchem
-    for(auto it = odbijacze.begin(); it != odbijacze.end();)
-    {
-	if(wybuchy.find((*it)->getPozycja()) != wybuchy.end())
-	{
-	    it = odbijacze.erase(it);
-	}
-	else ++it;
-    }
-
+    
     // obsługa zderzeń kulek: kulki zderzają się ze sobą parami
     for(auto it = kulki.begin(); it != kulki.end(); ++it)
     {
-	if((*it)->WNowejKratce())
-	{
-	    for(auto jt = kulki.begin(); jt != kulki.end(); ++jt)
+	for(auto jt = it; jt != kulki.end(); ++jt)
+	{   
+	    if(it != jt && (*it)->getPozycja() == (*jt)->getPozycja() &&
+	       ((*it)->czyKoliduje() || (*jt)->czyKoliduje()))
 	    {
-		if(it != jt && (it < jt || !(*jt)->WNowejKratce()) &&
-		   (*it)->getPozycja() == (*jt)->getPozycja())
-		{
-		    std::cout << "ZDERZENIE KULEK W " << (*it)->getPozycja().first << " "
-			      << (*it)->getPozycja().second << "\n";
-		    (*it)->zderzenie(*jt);
-		}
+		std::cout << "ZDERZENIE KULEK W " << (*it)->getPozycja().first << " "
+			  << (*it)->getPozycja().second << "\n";
+		if((*it)->getTyp() == TypKulki::zwykla) (*jt)->zderzenie(*it);
+		else (*it)->zderzenie(*jt);
 	    }
 	}
     }
 
     // obsługa odbić kulek
-    for(auto it = odbijacze.begin(); it != odbijacze.end();)
+    for(auto it = odbijacze.begin(); it != odbijacze.end(); ++it)
     {
-	bool zniszczony = false;
-	for(auto jt = kulki.begin(); !zniszczony && jt != kulki.end();)
+	for(auto jt = kulki.begin(); jt != kulki.end(); ++jt)
 	{
 	    if((*it)->getPozycja() == (*jt)->getPozycja())
 	    {
 		std::cout << "ODBICIE W " << (*it)->getPozycja().first << " "
 			  << (*it)->getPozycja().second << "\n";
-		std::pair<bool, bool> wynik = (*it)->odbij(*jt);
-
-		// jeśli odbicie zniszczyło odbijacz
-		if(wynik.first == false)
-		{
-		    it = odbijacze.erase(it);
-		    zniszczony = true;
-		}
-		// jeśli odbicie znisczyło kulkę
-		if(wynik.second == false) jt = kulki.erase(jt);
-		else ++jt;
+	        (*it)->odbij(*jt);
 	    }
-	    else ++jt;
 	}
-	if(!zniszczony) ++it;
+    }
+
+    for(auto it = kulki.begin(); it != kulki.end();)
+    {
+	if((*it)->czyZniszczona()) it = kulki.erase(it);
+	else ++it;
+    }
+    
+    for(auto it = odbijacze.begin(); it != odbijacze.end();)
+    {
+	if((*it)->czyZniszczony()) it = odbijacze.erase(it);
+	else ++it;
     }
 
     ++obecnaTura;
