@@ -27,7 +27,7 @@ class Kulka
     // Konstruktor Kulki, zmienne s i w (szerokość i wysokość), aby kulka mogła od razu stwierdzić w jakim kierunku ma się poruszać
     Kulka(std::pair<int, int> _pozycja, int s, int w, TypKulki _typ);
 
-    bool zrobRuch();
+    virtual bool zrobRuch();
 
     // Funkcja pomocnicza do samego wykonywania ruchu w zadanym kierunku
     bool krokWKierunku();
@@ -60,14 +60,14 @@ class Zwykla: public Kulka
 {
     public:
     Zwykla(std::pair<int, int> _pozycja, int s, int w): Kulka(_pozycja, s, w, TypKulki::zwykla) {;}
-    void zderzenie(const std::shared_ptr<Kulka>& kulka);
+    void zderzenie(const std::shared_ptr<Kulka>& kulka) override;
 };
 
 class Taran: public Kulka
 {
     public:
     Taran(std::pair<int, int> _pozycja, int s, int w): Kulka(_pozycja, s, w, TypKulki::taran) {;}
-    void zderzenie(const std::shared_ptr<Kulka>& kulka);
+    void zderzenie(const std::shared_ptr<Kulka>& kulka) override;
 };
 
 class Wybuchowa: public Kulka
@@ -80,6 +80,6 @@ class Wybuchowa: public Kulka
 	czasDoWybuchu(_czasDoWybuchu)
 	{;}
     bool zrobRuch();
-    void zderzenie(const std::shared_ptr<Kulka>& kulka);
+    void zderzenie(const std::shared_ptr<Kulka>& kulka) override;
     bool czyWybuchla() {return (czasDoWybuchu <= 0); }
 };

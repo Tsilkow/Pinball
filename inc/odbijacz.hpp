@@ -37,21 +37,21 @@ class Ukosny: public Odbijacz
     int skos; // 0 = \, 1 = /
     public:
     Ukosny(std::pair<int, int> _pozycja, int _skos): Odbijacz(_pozycja), skos(_skos) {;}
-    void odbij(const std::shared_ptr<Kulka>& kulka);
+    void odbij(const std::shared_ptr<Kulka>& kulka) override;
 };
     
 class Losowy: public Odbijacz
 {
     public:
     Losowy(std::pair<int, int> _pozycja): Odbijacz(_pozycja) {;}
-    void odbij(const std::shared_ptr<Kulka>& kulka);
+    void odbij(const std::shared_ptr<Kulka>& kulka) override;
 };
   
 class Zjadajacy: public Odbijacz
 {
     public:
     Zjadajacy(std::pair<int, int> _pozycja): Odbijacz(_pozycja) {;}
-    void odbij(const std::shared_ptr<Kulka>& kulka);
+    void odbij(const std::shared_ptr<Kulka>& kulka) override;
 };
     
 class Predkosciowy: public Odbijacz
@@ -61,12 +61,12 @@ class Predkosciowy: public Odbijacz
     public:
     Predkosciowy(std::pair<int, int> _pozycja, bool _przyspieszajacy):
 	Odbijacz(_pozycja), przyspieszajacy(_przyspieszajacy) {;}
-    void odbij(const std::shared_ptr<Kulka>& kulka);
+    void odbij(const std::shared_ptr<Kulka>& kulka) override;
 };
   
 class Mglowy: public Odbijacz
 {
     public:
     Mglowy(std::pair<int, int> _pozycja): Odbijacz(_pozycja) {;}
-    void odbij(const std::shared_ptr<Kulka>& kulka);
+    void odbij(const std::shared_ptr<Kulka>& kulka) override;
 };
